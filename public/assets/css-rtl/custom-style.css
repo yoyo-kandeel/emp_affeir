@@ -1,0 +1,29 @@
+
+    * {
+          font-size: 18px !important;
+
+    }
+.btn-radio {
+    display: inline-block;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #495057;
+}
+.btn-radio input { display: none; }
+.btn-radio:hover {
+    border-color: #0d6efd;
+    background-color: #f0f7ff;
+}
+.btn-radio.active {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    color: white;
+    border-color: #0d6efd;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
