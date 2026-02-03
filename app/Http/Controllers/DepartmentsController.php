@@ -3,91 +3,103 @@
 namespace App\Http\Controllers;
 
 use App\Models\departments;
-use App\Http\Controllers\Controller;
 use App\Models\jobs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
 class DepartmentsController extends Controller
 {
-   public function index()
-{
-    $this->authorize('عرض الإدارات'); // التحقق من صلاحية عرض الإدارات
+    // ===== عرض الإدارات =====
+    public function index()
+    {
+        $this->authorize('عرض الإدارات');
 
-    $departments = departments::all();
-    return view('departments.departments', compact('departments'));
-}
+        $departments = departments::all();
+        return view('departments.departments', compact('departments'));
+    }
 
-public function store(Request $request)
-{
-    $this->authorize('اضافة إدارة'); // التحقق من صلاحية إضافة إدارة
+    // ===== صفحة إضافة إدارة =====
+    public function create()
+    {
+        $this->authorize('اضافة إدارة');
 
-    $request->validate([
-        'department_name' => 'required|unique:departments|max:255',
-        'description'     => 'nullable|max:255',
-    ], [
-        'department_name.unique'   => 'خطأ: الاداره مسجل مسبقاً',
-        'department_name.required' => 'اسم الاداره مطلوب',
-        'department_name.max'      => 'اسم الاداره طويل جداً',
-        'description.max'          => 'الوصف طويل جداً',
-    ]);
+        return view('departments.add_departments');
+    }
 
-    departments::create([
-        'department_name' => $request->department_name,
-        'description'     => $request->description,
-        'created_by'      => Auth::user()->name,
-    ]);
+    // ===== حفظ الإدارة =====
+    public function store(Request $request)
+    {
+        $this->authorize('اضافة إدارة');
 
-    session()->flash('Add', 'تم إضافة الاداره بنجاح');
-    return redirect()->route('departments.index');
-}
+        $request->validate([
+            'department_name' => 'required|unique:departments|max:255',
+            'description'     => 'nullable|max:255',
+        ], [
+            'department_name.required' => 'اسم الإدارة مطلوب',
+            'department_name.unique'   => 'الإدارة مسجلة مسبقًا',
+            'department_name.max'      => 'اسم الإدارة طويل جدًا',
+            'description.max'          => 'الوصف طويل جدًا',
+        ]);
 
-public function edit(departments $department)
-{
-    $this->authorize('تعديل إدارة'); // التحقق من صلاحية تعديل إدارة
-    return view('departments.edit', compact('department'));
-}
+        departments::create([
+            'department_name' => $request->department_name,
+            'description'     => $request->description,
+            'created_by'      => Auth::user()->name,
+        ]);
 
-public function update(Request $request, departments $department)
-{
-    $this->authorize('تعديل إدارة'); // التحقق من صلاحية تعديل إدارة
+        session()->flash('Add', 'تم إضافة الإدارة بنجاح');
+        return redirect()->route('departments.index');
+    }
 
-    $request->validate([
-        'department_name' => 'required|string|max:255|unique:departments,department_name,' . $department->id,
-        'description'     => 'nullable|string|max:255',
-    ], [
-        'department_name.unique'   => 'خطأ: الاداره مسجل مسبقاً',
-        'department_name.required' => 'اسم الاداره مطلوب',
-        'department_name.max'      => 'اسم الاداره طويل جداً',
-        'description.max'          => 'الوصف طويل جداً',
-    ]);
+    // ===== صفحة تعديل إدارة =====
+    public function edit(departments $department)
+    {
+        $this->authorize('تعديل إدارة');
 
-    $department->update([
-        'department_name' => $request->department_name,
-        'description'     => $request->description,
-    ]);
+        return view('departments.edit_departments', compact('department'));
+    }
 
-    session()->flash('edit', 'تم تحديث الاداره بنجاح');
-    return redirect()->route('departments.index');
-}
+    // ===== تحديث الإدارة =====
+    public function update(Request $request, departments $department)
+    {
+        $this->authorize('تعديل إدارة');
 
-public function destroy(departments $department)
-{
-    $this->authorize('حذف إدارة'); // التحقق من صلاحية حذف إدارة
+        $request->validate([
+            'department_name' => 'required|max:255|unique:departments,department_name,' . $department->id,
+            'description'     => 'nullable|max:255',
+        ], [
+            'department_name.required' => 'اسم الإدارة مطلوب',
+            'department_name.unique'   => 'الإدارة مسجلة مسبقًا',
+            'department_name.max'      => 'اسم الإدارة طويل جدًا',
+            'description.max'          => 'الوصف طويل جدًا',
+        ]);
 
-    $department->delete();
-    session()->flash('delete', 'تم حذف الاداره بنجاح');
-    return redirect()->route('departments.index');
-}
+        $department->update([
+            'department_name' => $request->department_name,
+            'description'     => $request->description,
+        ]);
 
-public function jobs($id)
-{
-    $this->authorize('عرض الإدارات'); // التحقق من صلاحية عرض الإدارات
+        session()->flash('edit', 'تم تحديث الإدارة بنجاح');
+        return redirect()->route('departments.index');
+    }
 
-    return jobs::where('department_id', $id)
-        ->select('id', 'job_name')
-        ->get();
-}
+    // ===== حذف إدارة =====
+    public function destroy(departments $department)
+    {
+        $this->authorize('حذف إدارة');
 
+        $department->delete();
+        session()->flash('delete', 'تم حذف الإدارة بنجاح');
+        return redirect()->route('departments.index');
+    }
+
+    // ===== جلب الوظائف حسب الإدارة (AJAX) =====
+    public function jobs($id)
+    {
+        $this->authorize('عرض الإدارات');
+
+        return jobs::where('department_id', $id)
+            ->select('id', 'job_name')
+            ->get();
+    }
 }

@@ -19,6 +19,14 @@ class JobsController extends Controller
 
         return view('jobs.jobs', compact('jobs', 'departments'));
     }
+    // ===== صفحة إضافة إدارة =====
+    public function create()
+    {
+        $this->authorize('اضافة وظيفة');
+
+        $departments = departments::all();
+        return view('jobs.add_jobs', compact('departments'));
+    }
 
     // إضافة وظيفة جديدة
     public function store(Request $request)
@@ -42,10 +50,19 @@ class JobsController extends Controller
         ]);
 
         session()->flash('success', 'تم إضافة الوظيفة بنجاح');
-        return redirect()->back();
+        return redirect()->route('jobs.index');
     }
 
     // تعديل الوظيفة
+      public function edit($id)
+    {
+        $this->authorize('تعديل وظيفة');
+
+        $job = jobs::findOrFail($id);
+        $departments = departments::all();
+
+        return view('jobs.edit_jobs', compact('job', 'departments'));
+    }
     public function update(Request $request, $id)
     {
         $this->authorize('تعديل وظيفة');
@@ -69,7 +86,7 @@ class JobsController extends Controller
         ]);
 
         session()->flash('success', 'تم تعديل الوظيفة بنجاح');
-        return redirect()->back();
+        return redirect()->route('jobs.index');
     }
 
     // حذف الوظيفة
@@ -80,6 +97,6 @@ class JobsController extends Controller
         jobs::findOrFail($id)->delete();
 
         session()->flash('success', 'تم حذف الوظيفة بنجاح');
-        return redirect()->back();
+        return redirect()->route('jobs.index');
     }
 }

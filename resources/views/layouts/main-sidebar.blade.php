@@ -46,10 +46,16 @@
                 <ul class="slide-menu">
                     @can('عرض الموظفين')
                     <li><a class="slide-item" href="{{ route('emp_data.index') }}">بيانات الموظفين</a></li>
+                    @can('اضافة موظف')
+                       <li><a class="slide-item" href="{{ route('emp_data.create') }}"> اضافة موظف</a></li>
+                    @endcan
                     @endcan
 
                     @can('عرض بيانات التوظيف')
                     <li><a class="slide-item" href="{{ route('emp_employment.index') }}">بيانات التوظيف</a></li>
+                    @can('اضافة بيانات التوظيف')
+                    <li><a class="slide-item" href="{{ route('emp_employment.create') }}">  إضافة بيانات توظيف جديدة</a></li>
+                    @endcan
                     @endcan
 
                     @can('عرض حالات الموظفين')
@@ -72,10 +78,16 @@
                 <ul class="slide-menu">
                     @can('عرض الإدارات')
                     <li><a class="slide-item" href="{{ route('departments.index') }}">الإدارات</a></li>
+                @can('اضافة إدارة')
+                <li><a class="slide-item" href="{{ route('departments.create') }}"> إضافة إدارة</a></li>
+                @endcan
                     @endcan
 
                     @can('عرض الوظائف')
                     <li><a class="slide-item" href="{{ route('jobs.index') }}">الوظائف</a></li>
+                    @can('اضافة وظيفة')
+                    <li><a class="slide-item" href="{{ route('jobs.create') }}"> إضافة وظيفة</a></li>
+                    @endcan
                     @endcan
                 </ul>
             </li>
@@ -128,16 +140,28 @@
                 <ul class="slide-menu">
                     @can('عرض الرواتب')
                     <li><a class="slide-item" href="{{ route('emp_salaries.index') }}">الرواتب</a></li>
+                    @can('اضافة كشف مرتب')
+                     <li><a class="slide-item" href="{{ route('emp_salaries.create') }}"> إضافة كشف مرتب</a></li>
+                    @endcan
                     @endcan
                     @can('عرض الأذونات')
                     <li><a class="slide-item" href="{{ route('emp_permissions.index') }}">الأذونات</a></li>
+                    @can('اضافة إذن')
+                    <li><a class="slide-item" href="{{ route('emp_permissions.create') }}"> إضافة إذن</a></li>
+                    @endcan
                     @endcan
                     @can('عرض البدلات')
                     <li><a class="slide-item" href="{{ route('allowances.index') }}">البدلات</a></li>
+                    @can('اضافة بدل')
+                    <li><a class="slide-item" href="{{ route('allowances.create') }}"> إضافة بدل</a></li>
+                    @endcan
                     @endcan
 
                     @can('عرض الخصومات')
                     <li><a class="slide-item" href="{{ route('emp_deductions.index') }}">الخصومات</a></li>
+                    @can('اضافة خصم')
+                    <li><a class="slide-item" href="{{ route('emp_deductions.create') }}"> إضافة خصم</a></li>
+                    @endcan
                     @endcan
                 </ul>
             </li>

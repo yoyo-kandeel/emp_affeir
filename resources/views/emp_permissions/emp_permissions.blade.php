@@ -67,13 +67,7 @@
 
         {{-- الجدول --}}
         <div class="card mg-b-20">
-             <div class="card-header pb-0 d-flex justify-content-between">
-                @can('اضافة إذن')
-                <a href="{{ route('emp_permissions.create') }}" class="btn btn-sm btn-primary">
-                    <i class="fas fa-plus"></i>  إضافة إذن جديد
-                </a>
-                @endcan
-            </div>
+       
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="permissions_table" class="table table-bordered text-center">

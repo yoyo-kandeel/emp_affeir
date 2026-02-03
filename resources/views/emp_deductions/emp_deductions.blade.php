@@ -67,14 +67,7 @@
 
         {{-- الجدول --}}
         <div class="card mg-b-20">
-             <div class="card-header pb-0 d-flex justify-content-between">
-                @can('اضافة خصم')
-                <a href="{{ route('emp_deductions.create') }}" class="btn btn-sm btn-primary">
-                    <i class="fas fa-plus"></i>  إضافة خصم  جديدة
-                </a>
-                @endcan
-
-            </div>
+            
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="deductions_table" class="table table-bordered text-center">

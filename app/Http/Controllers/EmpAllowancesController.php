@@ -23,7 +23,18 @@ class EmpAllowancesController extends Controller
 
         return view('allowances.allowances', compact('allowances', 'years', 'months'));
     }
+/**
+ * عرض صفحة إضافة بدل جديد
+ */
+public function create()
+{
+    $this->authorize('اضافة بدل'); // التحقق من صلاحية إضافة بدل
 
+    $years  = Years::all();
+    $months = Months::all();
+
+    return view('allowances.add_allowances', compact('years', 'months'));
+}
     /**
      * إضافة بدل جديد
      */
@@ -45,8 +56,23 @@ class EmpAllowancesController extends Controller
             'created_by'     => Auth::user()->name ?? null,
         ]);
 
-        return redirect()->back()->with('success', 'تم إضافة البدل بنجاح');
+        return redirect()->route('allowances.index')->with('success', 'تم إضافة البدل بنجاح');
     }
+
+
+/**
+ * عرض صفحة تعديل بدل
+ */
+public function edit($id)
+{
+    $this->authorize('تعديل بدل'); // التحقق من صلاحية تعديل بدل
+
+    $allowance = EmpAllowance::findOrFail($id);
+    $years     = Years::all();
+    $months    = Months::all();
+
+    return view('allowances.edit_allowances', compact('allowance', 'years', 'months'));
+}
 
     /**
      * تعديل بدل
@@ -70,7 +96,7 @@ class EmpAllowancesController extends Controller
             'month_id'       => $request->month_id,
         ]);
 
-        return redirect()->back()->with('success', 'تم تعديل البدل بنجاح');
+        return redirect()->route('allowances.index')->with('success', 'تم تعديل البدل بنجاح');
     }
 
     /**
@@ -83,6 +109,6 @@ class EmpAllowancesController extends Controller
         $allowance = EmpAllowance::findOrFail($id);
         $allowance->delete();
 
-        return redirect()->back()->with('success', 'تم حذف البدل بنجاح');
+        return redirect()->route('allowances.index')->with('success', 'تم حذف البدل بنجاح');
     }
 }

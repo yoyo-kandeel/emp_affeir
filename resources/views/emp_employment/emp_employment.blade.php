@@ -63,12 +63,6 @@
         <div class="card mg-b-20">
           
             <div class="card-header pb-0 d-flex justify-content-between">
-                @can('اضافة بيانات التوظيف')
-                <a href="{{ route('emp_employment.create') }}" class="btn btn-sm btn-primary">
-                    <i class="fas fa-plus"></i>  إضافة بيانات توظيف جديدة
-                </a>
-                @endcan
-
             </div>
 
             <div class="card-body">
@@ -174,7 +168,7 @@ $(document).ready(function () {
         },
         columns: [
             { data: null, render: (d,t,r,m) => m.row + 1 },
-            { data: 'full_name', render: (data, type, row) => `@can('عرض بيانات التوظيف')<a href="/emp_employment/${row.id}">${data}</a>@else${data}@endcan` },
+            { data: 'full_name', render: (data, type, row) => `@can('تعديل بيانات التوظيف')<a href="/emp_employment/${row.id}/edit">${data}</a>@else${data}@endcan` },
             { data: 'basic_salary' },
            { data: 'insured', render: d => d == 1 ? 'نعم' : 'لا' }
 

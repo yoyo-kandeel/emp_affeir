@@ -107,10 +107,40 @@
                             <i class="las la-mdi-update"></i> تحديث بيانات التوظيف
                         </button>
 
-                        </div>
+                </form>
+                      
+                        
+                    @can('حذف بيانات التوظيف')
+                   <button type="button" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#delete_employee"data-id="{{ $emp_employment->id }}">
+                    <i class="fas fa-trash-alt"></i> حذف
+                </button>
+                    @endcan
+                </div>
+                </div>
+                <!-- حذف بيانات التوظيف -->
+                <div class="modal fade" id="delete_employee" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <form id="deleteForm" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">حذف بيانات التوظيف</h5>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    هل انت متأكد من حذف بيانات التوظيف للموظف؟
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                                    <button type="submit" class="btn btn-danger">تأكيد الحذف</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                     </div>
 
-                </form>
             </div>
         </div>
     </div>
@@ -217,7 +247,14 @@ $(document).ready(function () {
 });
 </script>
 
-
+<script>
+$('#delete_employee').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);
+    var empId = button.data('id');
+    var form = $(this).find('#deleteForm');
+    form.attr('action', '/emp_employment/' + empId);
+});
+</script>
 
 
 

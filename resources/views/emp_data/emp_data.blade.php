@@ -63,11 +63,7 @@
         <div class="card mg-b-20">
           
             <div class="card-header pb-0 d-flex justify-content-between">
-                  @can('اضافة موظف')
-                <a href="{{ route('emp_data.create') }}" class="btn btn-sm btn-primary">
-                    <i class="fas fa-plus"></i> اضافة موظف
-                </a>
-                @endcan
+               
                 @can('تصدير اكسيل موظفين')
                <a href="{{ url('/test-export') }}" class="btn btn-info mb-3">
     <i class="fas fa-file-download"></i> تصدير اكسيل

@@ -58,11 +58,6 @@
 {{-- الجدول --}}
 <div class="card mg-b-20">
     <div class="card-header pb-0 d-flex justify-content-between">
-        @can('اضافة كشف مرتب')
-        <a href="{{ route('emp_salaries.create') }}" class="btn btn-sm btn-primary">
-            <i class="fas fa-plus"></i> إضافة كشف مرتب
-        </a>
-        @endcan
     </div>
 
     <div class="card-body">
