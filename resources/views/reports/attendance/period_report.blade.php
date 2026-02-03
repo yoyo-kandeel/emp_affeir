@@ -3,11 +3,80 @@
 
 @section('css')
 <link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
+
+<style>
+@media print {
+    /* إخفاء الهيدر والفوتر والقوائم */
+    .main-header,
+    footer,
+    .btn,
+    .sidebar,
+    .breadcrumb {
+        display: none !important;
+    }
+
+    body {
+        margin: 0;
+        font-size: 12px;
+        color: #000;
+    }
+
+    /* تنسيق الكروت والجداول */
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+    }
+
+    table {
+        width: 100% !important;
+        border-collapse: collapse;
+    }
+
+    table th, table td {
+        border: 1px solid #000 !important;
+        padding: 5px !important;
+        font-size: 12px;
+    }
+
+    /* شعار الشركة */
+    #logoPreview {
+        max-height: 80px;
+        display: block;
+    }
+
+    /* اجعل كل بطاقة تبدأ في صفحة جديدة إذا كبيرة */
+    .card {
+        page-break-after: auto;
+    }
+}
+</style>
+
+
 @endsection
 
-@section('content')
-<h4>تقرير الحضور من {{ $fromDate->toDateString() }} إلى {{ $toDate->toDateString() }}</h4>
 
+@section('content')
+&nbsp;
+  <div class="row mb-2 align-items-center">
+ 
+    <div class="col-md-5">
+        <strong>اسم المنشأة:</strong> {{ $organization->name }}
+    </div>
+    <div class="col-md-5">
+        <strong>عنوان المنشأة:</strong> {{ $organization->address }}
+    </div>
+       <div class="col-md-2">
+        @if($organization->logo)
+    <img id="logoPreview" src="{{ $organization->logo ? asset('storage/'.$organization->logo) : '#' }}" 
+                             style="max-width:80px; display: {{ $organization->logo ? 'block' : 'none' }}">        @else
+            <span>لا يوجد شعار</span>
+        @endif
+    </div>
+</div>
+ <hr>
+      <h4>تقرير الحضور من {{ $fromDate->toDateString() }} إلى {{ $toDate->toDateString() }}</h4>
+ <hr>
 <!-- أزرار الطباعة و Excel -->
 <form method="POST" action="{{ route('attendance.report.results') }}" class="mb-3">
     @csrf
@@ -18,6 +87,7 @@
 </form>
 
 @foreach($report as $employeeId => $records)
+
 <div class="card mb-3">
     <div class="card-header">
         <strong>{{ $records[0]['employee_name'] }}</strong> - {{ $records[0]['department_name'] ?? '-' }} - {{ $records[0]['job_name'] ?? '-' }}
@@ -32,6 +102,8 @@
                     <th>خروج</th>
                     <th>عدد ساعات العمل</th>
                     <th>التأخير بالدقائق</th>
+                    <th>الانصراف المبكر بالدقائق</th>
+
                     <th>الحالة</th>
                 </tr>
             </thead>
@@ -44,18 +116,34 @@
                     <td>{{ $r['time_out'] }}</td>
                     <td>{{ $r['hours_worked'] }}</td>
                     <td>
-                        @php
-                            $late = 0;
-                            if($r['time_in'] != '-' && $r['shift'] != '-'){
-                                // تحويل الوقت الى Carbon
-                                $shiftStart = \Carbon\Carbon::parse($r['shift_start'] ?? '00:00');
-                                $timeIn     = \Carbon\Carbon::parse($r['time_in']);
-                                $diff = $timeIn->diffInMinutes($shiftStart, false);
-                                $late = $diff > 0 ? $diff : 0;
-                            }
-                        @endphp
-                        {{ $late }}
+                    @php
+                    $late = 0;
+
+                    if($r['time_in'] != '-' && $r['start_time'] != '-'){
+                        $shiftStart = \Carbon\Carbon::parse($r['start_time']);
+                        $timeIn     = \Carbon\Carbon::parse($r['time_in']);
+
+                        if ($timeIn->gt($shiftStart)) {
+                            $late = $shiftStart->diffInMinutes($timeIn);
+                        }
+                    }
+                @endphp
+
+                {{ $late }}
                     </td>
+                      <td>
+        @php
+            $earlyLeave = 0;
+            if($r['time_out'] != '-' && isset($r['end_time']) && $r['end_time'] != '-') {
+                $shiftEnd = \Carbon\Carbon::parse($r['end_time']);
+                $timeOut  = \Carbon\Carbon::parse($r['time_out']);
+                if ($timeOut->lt($shiftEnd)) {
+                    $earlyLeave = $timeOut->diffInMinutes($shiftEnd);
+                }
+            }
+        @endphp
+        {{ $earlyLeave }}
+    </td>
                     <td>{{ $r['status'] }}</td>
                 </tr>
                 @endforeach

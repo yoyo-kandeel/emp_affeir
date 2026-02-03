@@ -30,6 +30,7 @@ class AttendancePeriodExport implements FromArray, WithHeadings
                     $r['time_out'],
                     $r['hours_worked'],
                     $r['late_minutes'],
+                    $r['early_leave'],
                     $r['status'],
                 ];
             }
@@ -49,6 +50,7 @@ class AttendancePeriodExport implements FromArray, WithHeadings
             'وقت الخروج',
             'عدد ساعات العمل',
             'التأخير بالدقائق',
+            'الانصراف المبكر بالدقائق',
             'الحالة',
         ];
     }

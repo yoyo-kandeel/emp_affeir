@@ -10,6 +10,7 @@ use App\Models\departments;
 use Carbon\Carbon;
     use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AttendancePeriodExport;
+use App\Models\Organization;
 
 class AttendanceReportController extends Controller
 {
@@ -50,7 +51,10 @@ class AttendanceReportController extends Controller
     if($request->has('export_excel')) {
         return Excel::download(new AttendancePeriodExport($report), 'attendance_report.xlsx');
     }
-        return view('reports.attendance.period_report', compact('report','fromDate','toDate'));
+    
+        // جلب بيانات المنشأة
+        $organization = Organization::first(); // أو حسب اختيارك
+        return view('reports.attendance.period_report', compact('report','fromDate','toDate','organization'));
     }
 
     // تقرير الفترة لكل موظف
@@ -71,6 +75,7 @@ class AttendanceReportController extends Controller
                     ->first();
 
                 $shiftStart = $shift ? $shift->shift->start_time : null;
+                $shiftEnd = $shift ? $shift->shift->end_time : null;
 
                 $logs = AttendanceLog::where('emp_data_id', $emp->id)
                     ->where('log_date', $date)
@@ -88,23 +93,39 @@ class AttendanceReportController extends Controller
                     $diff = Carbon::parse($timeIn)->diffInMinutes(Carbon::parse($shiftStart), false);
                     $late = $diff > 0 ? $diff : 0; // لو أكبر من صفر يبقى تأخير
                 }
+                // حساب الانصراف المبكر بالدقائق (إذا وقت الخروج قبل وقت نهاية الورديه)
+                $earlyLeave = 0;
+
+if ($timeOut && $shiftEnd) {
+    $shiftEndCarbon = Carbon::parse($shiftEnd);
+    $timeOutCarbon  = Carbon::parse($timeOut);
+
+    if ($timeOutCarbon->lt($shiftEndCarbon)) {
+        $earlyLeave = $timeOutCarbon->diffInMinutes($shiftEndCarbon);
+    }
+    
+}
 
                 $status = ($timeIn && $timeOut) ? 'حاضر' : 'غياب';
 
-                $employeeReport[] = [
-                    'date'            => $date->toDateString(),
-                    'employee_id'     => $emp->id,
-                    'employee_name'   => $emp->full_name,
-                    'department_name' => $emp->department?->department_name ?? '-',
-                    'job_name'        => $emp->job?->job_name ?? '-',
-                    'shift'           => $shift ? $shift->shift->name : '-',
-                    'time_in'         => $timeIn ?? '-',
-                    'time_out'        => $timeOut ?? '-',
-                    'hours_worked'    => $hoursWorked,
-                    'late_minutes'    => $late,
-                    'status'          => $status,
-                    'attendance_id'   => $logs->first()?->id ?? null,
-                ];
+          $employeeReport[] = [
+    'date'            => $date->toDateString(),
+    'employee_id'     => $emp->id,
+    'employee_name'   => $emp->full_name,
+    'department_name' => $emp->department?->department_name ?? '-',
+    'job_name'        => $emp->job?->job_name ?? '-',
+    'shift'           => $shift ? $shift->shift->name : '-',
+    'start_time'     => $shift ? $shift->shift->start_time : '-',
+     'end_time'        => $shift ? $shift->shift->end_time : '-', 
+    'time_in'         => $timeIn ?? '-',
+    'time_out'        => $timeOut ?? '-',
+    'hours_worked'    => $hoursWorked,
+    'late_minutes'    => $late,
+    'early_leave' => $earlyLeave,
+    'status'          => $status,
+    'attendance_id'   => $logs->first()?->id ?? null,
+];
+
             }
 
             $report[$emp->id] = $employeeReport;
