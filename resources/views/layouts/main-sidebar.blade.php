@@ -166,7 +166,7 @@
 
         @can('تقرير الحضور')
         <li>
-            <a class="slide-item" href="{{ ('reports.attendances') }}">
+            <a class="slide-item" href="{{ route('attendance.filters') }}">
                 تقرير الحضور والانصراف
             </a>
         </li>

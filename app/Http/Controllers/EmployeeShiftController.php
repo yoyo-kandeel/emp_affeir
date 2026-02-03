@@ -34,7 +34,7 @@ class EmployeeShiftController extends Controller
     // حفظ وردية جديدة (بفترة وأيام العمل)
     public function store(Request $request)
     {
-        $this->authorize('إضافة وردية'); // صلاحية إضافة وردية
+        $this->authorize('اضافة وردية'); // صلاحية إضافة وردية
 
         $request->validate([
             'emp_data_id' => 'required|exists:emp_datas,id',

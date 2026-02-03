@@ -17,7 +17,7 @@ class ShiftController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize('إضافة وردية'); // صلاحية إضافة وردية
+        $this->authorize('اضافة وردية'); // صلاحية إضافة وردية
 
         $request->validate([
             'name' => 'required|string|max:255',

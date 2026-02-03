@@ -21,7 +21,7 @@ class OrganizationController extends Controller
     public function edit(Organization $organization)
     {
         // التحقق من صلاحية "تعديل المنشأة"
-        $this->authorize('تعديل المنشأة');
+        $this->authorize('تعديل منشأة');
 
         return view('organizations.edit', compact('organization'));
     }
@@ -30,7 +30,7 @@ class OrganizationController extends Controller
     public function update(Request $request, Organization $organization)
     {
         // التحقق من صلاحية "تعديل المنشأة"
-        $this->authorize('تعديل المنشأة');
+        $this->authorize('تعديل منشأة');
 
         $data = $request->validate([
             'name' => 'required|string|max:255',

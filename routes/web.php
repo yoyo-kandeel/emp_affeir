@@ -31,6 +31,7 @@ use App\Http\Controllers\LatenessRuleController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\EmployeeShiftController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceReportController;
 
 
 
@@ -280,6 +281,8 @@ Route::prefix('reports')->group(function () {
 
 
 
+Route::get('attendance/filters', [AttendanceReportController::class,'filters'])->name('attendance.filters');
+Route::post('attendance/results', [AttendanceReportController::class,'results'])->name('attendance.report.results');
 
 
 
